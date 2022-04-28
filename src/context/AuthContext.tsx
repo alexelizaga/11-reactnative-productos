@@ -38,7 +38,10 @@ export const AuthProvider = ({children}: any) => {
         payload: {token: data.token, user: data.usuario},
       });
     } catch (error: any) {
-      dispatch({type: 'addError', payload: error.response.data.msg});
+      dispatch({
+        type: 'addError',
+        payload: error.response.data.msg || 'Información incorrecta',
+      });
     }
   };
 
@@ -46,7 +49,9 @@ export const AuthProvider = ({children}: any) => {
 
   const logOut = () => {};
 
-  const removeError = () => {};
+  const removeError = () => {
+    dispatch({type: 'removeError'});
+  };
 
   return (
     <AuthContext.Provider
