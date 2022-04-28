@@ -1,4 +1,3 @@
-import { StackScreenProps } from '@react-navigation/stack';
 import React from 'react';
 import {
   Keyboard,
@@ -9,6 +8,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import {StackScreenProps} from '@react-navigation/stack';
 
 import {Background} from '../components/Background';
 import {WhiteLogo} from '../components/WhiteLogo';
