@@ -1,4 +1,4 @@
-import {Usuario} from '../navigator/appInterfaces';
+import {Usuario} from '../interfaces/appInterfaces';
 
 export interface AuthState {
   status: 'cheking' | 'authenticated' | 'not-authenticated';
@@ -14,7 +14,10 @@ type AuthAction =
   | {type: 'notAuthenticated'}
   | {type: 'logOut'};
 
-export const authReducer = (state: AuthState, action: AuthAction): AuthState => {
+export const authReducer = (
+  state: AuthState,
+  action: AuthAction,
+): AuthState => {
   switch (action.type) {
     case 'addError':
       return {

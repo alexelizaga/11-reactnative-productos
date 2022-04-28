@@ -1,6 +1,7 @@
 import React, {createContext, useReducer} from 'react';
 
-import {Usuario} from '../navigator/appInterfaces';
+import cafeApi from '../api/cafeApi';
+import {LoginData, LoginResponse, Usuario} from '../interfaces/appInterfaces';
 import {authReducer, AuthState} from './authReducer';
 
 type AuthContextProps = {
@@ -9,7 +10,7 @@ type AuthContextProps = {
   user: Usuario | null;
   status: 'cheking' | 'authenticated' | 'not-authenticated';
   signUp: () => void;
-  signIn: () => void;
+  signIn: (loginData: LoginData) => Promise<void>;
   logOut: () => void;
   removeError: () => void;
 };
@@ -26,9 +27,19 @@ export const AuthContext = createContext({} as AuthContextProps);
 export const AuthProvider = ({children}: any) => {
   const [state, dispatch] = useReducer(authReducer, authInitialState);
 
-  const signUp = () => {};
+  const signIn = async ({correo, password}: LoginData) => {
+    try {
+      const resp = await cafeApi.post<LoginResponse>('/auth/login', {
+        correo,
+        password,
+      });
+      console.log(resp.data);
+    } catch (error: any) {
+      console.log(error.response.data);
+    }
+  };
 
-  const signIn = () => {};
+  const signUp = () => {};
 
   const logOut = () => {};
 
