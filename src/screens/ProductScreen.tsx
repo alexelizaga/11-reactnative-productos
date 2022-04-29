@@ -23,7 +23,7 @@ export const ProductScreen = ({route, navigation}: Props) => {
 
   const {categories} = useCategories();
 
-  const {loadProductById, addProduct, updateProduct} =
+  const {loadProductById, addProduct, updateProduct, deleteProduct} =
     useContext(ProductsContext);
 
   const {_id, categoriaId, nombre, img, form, onChange, setFormValue} = useForm(
@@ -66,6 +66,12 @@ export const ProductScreen = ({route, navigation}: Props) => {
     }
   };
 
+  const errase = async () => {
+    if (id && id.length > 0) {
+      deleteProduct(id);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <ScrollView>
@@ -87,26 +93,32 @@ export const ProductScreen = ({route, navigation}: Props) => {
           ))}
         </Picker>
 
-        <Button title="Guardar" onPress={saveOrUpdate} color={'#5856D6'} />
+        <Button
+          title={_id && _id.length > 0 ? 'Actualizar' : 'Guardar'}
+          onPress={saveOrUpdate}
+          color={'#5856D6'}
+        />
 
         {_id && _id.length > 0 && (
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'center',
-              marginTop: 10,
-            }}>
-            <Button title="Cámara" onPress={() => {}} color={'#5856D6'} />
+          <View style={{marginTop: 10}}>
+            <Button title="Borrar" onPress={errase} color={'#5856D6'} />
+          </View>
+        )}
+
+        {_id && _id.length > 0 && (
+          <View style={styles.btnContainer}>
+            <View style={{flex:1}}>
+              <Button title="Cámara" onPress={() => {}} color={'#5856D6'} />
+            </View>
             <View style={{width: 10}} />
-            <Button title="Galería" onPress={() => {}} color={'#5856D6'} />
+            <View style={{flex:1}}>
+              <Button title="Galería" onPress={() => {}} color={'#5856D6'} />
+            </View>
           </View>
         )}
 
         {img.length > 0 && (
-          <Image
-            source={{uri: img}}
-            style={{marginTop: 20, width: '100%', height: 300}}
-          />
+          <Image source={{uri: img}} style={styles.productImg} />
         )}
       </ScrollView>
     </View>
@@ -131,5 +143,15 @@ const styles = StyleSheet.create({
     height: 45,
     marginTop: 5,
     marginBottom: 15,
+  },
+  btnContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 10,
+  },
+  productImg: {
+    marginTop: 20,
+    width: '100%',
+    height: 300,
   },
 });
