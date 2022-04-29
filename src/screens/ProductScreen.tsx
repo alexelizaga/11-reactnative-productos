@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext, useEffect} from 'react';
 import {
   View,
   Text,
@@ -6,6 +6,7 @@ import {
   ScrollView,
   TextInput,
   Button,
+  Image,
 } from 'react-native';
 import {StackScreenProps} from '@react-navigation/stack';
 import {Picker} from '@react-native-picker/picker';
@@ -19,28 +20,32 @@ interface Props
   extends StackScreenProps<ProductsStackParams, 'ProductScreen'> {}
 export const ProductScreen = ({route, navigation}: Props) => {
   const {id, name = ''} = route.params;
-  const {isLoading, categories} = useCategories();
+
+  const {categories} = useCategories();
+
   const {loadProductById} = useContext(ProductsContext);
-  const {_id, categoriaId, nombre, img, form, onChange, setFormValue} = useForm({
-    _id: id,
-    categoriaId: '',
-    nombre: name,
-    img: '',
-  });
-  const [selectedLanguage, setSelectedLanguage] = useState();
+
+  const {_id, categoriaId, nombre, img, form, onChange, setFormValue} = useForm(
+    {
+      _id: id,
+      categoriaId: '',
+      nombre: name,
+      img: '',
+    },
+  );
 
   useEffect(() => {
     navigation.setOptions({
-      headerTitle: id ? name : 'Nuevo producto',
+      title: name ? name : 'Nuevo producto',
     });
-  });
+  }, []);
 
   useEffect(() => {
     loadProduct();
-  });
+  }, []);
 
   const loadProduct = async () => {
-    if (!id || id?.length === 0) return;
+    if (!id || id.length === 0) return;
     const product = await loadProductById(id);
     setFormValue({
       _id: id,
@@ -64,10 +69,8 @@ export const ProductScreen = ({route, navigation}: Props) => {
         <Text style={styles.label}>Categoría</Text>
 
         <Picker
-          selectedValue={selectedLanguage}
-          onValueChange={(itemValue, itemIndex) =>
-            setSelectedLanguage(itemValue)
-          }>
+          selectedValue={categoriaId}
+          onValueChange={value => onChange(value, 'categoriaId')}>
           {categories.map(c => (
             <Picker.Item label={c.nombre} value={c._id} key={c._id} />
           ))}
@@ -86,7 +89,12 @@ export const ProductScreen = ({route, navigation}: Props) => {
           <Button title="Galería" onPress={() => {}} color={'#5856D6'} />
         </View>
 
-        <Text>{JSON.stringify(form, null, 5)}</Text>
+        {img.length > 0 && (
+          <Image
+            source={{uri: img}}
+            style={{marginTop: 20, width: '100%', height: 300}}
+          />
+        )}
       </ScrollView>
     </View>
   );
