@@ -7,7 +7,7 @@ import {
   LoginResponse,
   RegisterData,
   Usuario,
-} from '../interfaces/appInterfaces';
+} from '../interfaces/authInterfaces';
 import {authReducer, AuthState} from './authReducer';
 
 type AuthContextProps = {
