@@ -1,3 +1,5 @@
+/* eslint-disable react-native/no-inline-styles */
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, {useContext, useEffect} from 'react';
 import {
   View,
@@ -26,14 +28,12 @@ export const ProductScreen = ({route, navigation}: Props) => {
   const {loadProductById, addProduct, updateProduct, deleteProduct} =
     useContext(ProductsContext);
 
-  const {_id, categoriaId, nombre, img, form, onChange, setFormValue} = useForm(
-    {
-      _id: id,
-      categoriaId: '',
-      nombre: name,
-      img: '',
-    },
-  );
+  const {_id, categoriaId, nombre, img, onChange, setFormValue} = useForm({
+    _id: id,
+    categoriaId: '',
+    nombre: name,
+    img: '',
+  });
 
   useEffect(() => {
     navigation.setOptions({
@@ -46,7 +46,9 @@ export const ProductScreen = ({route, navigation}: Props) => {
   }, []);
 
   const loadProduct = async () => {
-    if (!id || id.length === 0) return;
+    if (!id || id.length === 0) {
+      return;
+    }
     const product = await loadProductById(id);
     setFormValue({
       _id: id,
@@ -107,11 +109,11 @@ export const ProductScreen = ({route, navigation}: Props) => {
 
         {_id && _id.length > 0 && (
           <View style={styles.btnContainer}>
-            <View style={{flex:1}}>
+            <View style={{flex: 1}}>
               <Button title="Cámara" onPress={() => {}} color={'#5856D6'} />
             </View>
             <View style={{width: 10}} />
-            <View style={{flex:1}}>
+            <View style={{flex: 1}}>
               <Button title="Galería" onPress={() => {}} color={'#5856D6'} />
             </View>
           </View>
