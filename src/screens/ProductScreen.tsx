@@ -56,12 +56,13 @@ export const ProductScreen = ({route, navigation}: Props) => {
     });
   };
 
-  const saveOrUpdate = () => {
+  const saveOrUpdate = async () => {
     if (id && id.length > 0) {
       updateProduct(categoriaId, nombre, id);
     } else {
       const tempCategoriaId = categoriaId || categories[0]._id;
-      addProduct(tempCategoriaId, nombre);
+      const newProduct = await addProduct(tempCategoriaId, nombre);
+      onChange(newProduct._id, '_id');
     }
   };
 
@@ -88,7 +89,7 @@ export const ProductScreen = ({route, navigation}: Props) => {
 
         <Button title="Guardar" onPress={saveOrUpdate} color={'#5856D6'} />
 
-        {id && id.length > 0 && (
+        {_id && _id.length > 0 && (
           <View
             style={{
               flexDirection: 'row',

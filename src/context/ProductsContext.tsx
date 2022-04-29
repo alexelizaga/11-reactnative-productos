@@ -7,7 +7,7 @@ import cafeApi from '../api/cafeApi';
 type ProductsContextProps = {
   products: Producto[];
   loadProducts: () => Promise<void>;
-  addProduct: (categoryId: string, productName: string) => Promise<void>;
+  addProduct: (categoryId: string, productName: string) => Promise<Producto>;
   updateProduct: (
     categoryId: string,
     productName: string,
@@ -38,9 +38,16 @@ export const ProductsProvider = ({children}: any) => {
     setProducts([...resp.data.productos]);
   };
 
-  const addProduct = async (categoryId: string, productName: string) => {
-    console.log('addProduct');
-    console.log({categoryId, productName});
+  const addProduct = async (
+    categoryId: string,
+    productName: string,
+  ): Promise<Producto> => {
+    const resp = await cafeApi.post<Producto>('/productos', {
+      nombre: productName,
+      categoria: categoryId,
+    });
+    setProducts([...products, resp.data]);
+    return resp.data;
   };
 
   const updateProduct = async (
@@ -48,8 +55,15 @@ export const ProductsProvider = ({children}: any) => {
     productName: string,
     productId: string,
   ) => {
-    console.log('updateProduct');
-    console.log({categoryId, productName, productId});
+    const resp = await cafeApi.put<Producto>(`/productos/${productId}`, {
+      nombre: productName,
+      categoria: categoryId,
+    });
+    setProducts(
+      products.map(prod => {
+        return prod._id === productId ? resp.data : prod;
+      }),
+    );
   };
 
   const deleteProduct = async (id: string) => {};
