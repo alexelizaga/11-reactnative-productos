@@ -1,6 +1,7 @@
+/* eslint-disable curly */
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, {useContext, useEffect} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -12,6 +13,7 @@ import {
 } from 'react-native';
 import {StackScreenProps} from '@react-navigation/stack';
 import {Picker} from '@react-native-picker/picker';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 
 import {ProductsStackParams} from '../navigator/ProductsNavigator';
 import {useCategories} from '../hooks/useCategories';
@@ -22,6 +24,8 @@ interface Props
   extends StackScreenProps<ProductsStackParams, 'ProductScreen'> {}
 export const ProductScreen = ({route, navigation}: Props) => {
   const {id, name = ''} = route.params;
+
+  const [tempUri, setTempUri] = useState<string>();
 
   const {categories} = useCategories();
 
@@ -74,6 +78,20 @@ export const ProductScreen = ({route, navigation}: Props) => {
     }
   };
 
+  const takePhoto = () => {
+    // const result = await launchCamera(options?);
+    launchCamera({mediaType: 'photo'}, resp => {
+      if (resp.didCancel) return;
+      if (!resp.assets || !resp.assets[0].uri) return;
+      setTempUri(resp.assets[0].uri);
+    });
+  };
+
+  const getPhoto = () => {
+    // const result = await launchImageLibrary(options?);
+    launchImageLibrary({mediaType: 'photo'}, resp => console.log(resp));
+  };
+
   return (
     <View style={styles.container}>
       <ScrollView>
@@ -110,18 +128,20 @@ export const ProductScreen = ({route, navigation}: Props) => {
         {_id && _id.length > 0 && (
           <View style={styles.btnContainer}>
             <View style={{flex: 1}}>
-              <Button title="Cámara" onPress={() => {}} color={'#5856D6'} />
+              <Button title="Cámara" onPress={takePhoto} color={'#5856D6'} />
             </View>
             <View style={{width: 10}} />
             <View style={{flex: 1}}>
-              <Button title="Galería" onPress={() => {}} color={'#5856D6'} />
+              <Button title="Galería" onPress={getPhoto} color={'#5856D6'} />
             </View>
           </View>
         )}
 
-        {img.length > 0 && (
+        {img.length > 0 && !tempUri && (
           <Image source={{uri: img}} style={styles.productImg} />
         )}
+
+        {tempUri && <Image source={{uri: tempUri}} style={styles.productImg} />}
       </ScrollView>
     </View>
   );
